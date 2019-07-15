@@ -57,7 +57,7 @@ func Receive(word string) {
 	fmt.Println(topic)
 
 	for {
-
+		fmt.Print()
 	}
 
 }
