@@ -1,0 +1,29 @@
+version: '3.3'
+
+services:
+
+   client:
+    build: ./client
+    restart: always
+    
+   server:
+    build: ./server
+    restart: always
+
+   eclipse-mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto:latest
+    restart: always
+    links:
+      - client:client
+      - server:server
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    ports:
+      - 1883:1883
+    user: '1000:1000'
+    
+      
+   
