@@ -11,7 +11,7 @@ services:
     restart: always
 
    eclipse-mosquitto:
-    container_name: mosquitto
+    container_name: MQTT-broker
     image: eclipse-mosquitto:latest
     restart: always
     links:
