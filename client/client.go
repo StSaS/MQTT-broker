@@ -2,23 +2,15 @@ package main
 
 import (
 	"fmt"
+	MQTT "github.com/eclipse/paho.mqtt.golang"
 	"math/rand"
 	"os"
 	"strings"
+
 	"time"
 )
 
-import MQTT "github.com/eclipse/paho.mqtt.golang"
-
-func Publish(word string) {
-
-	opts := MQTT.NewClientOptions().AddBroker("tcp://iot.eclipse.org:1883")
-	opts.SetClientID("client_topic_" + word)
-
-	c := MQTT.NewClient(opts)
-	if token := c.Connect(); token.Wait() && token.Error() != nil {
-		panic(token.Error())
-	}
+func Publish(word string, c MQTT.Client) {
 
 	topic := "topic_" + word
 	rand.Seed(time.Now().UnixNano())
@@ -26,6 +18,7 @@ func Publish(word string) {
 	for {
 
 		token := c.Publish(topic, 0, false, word)
+
 		token.Wait()
 		n := rand.Intn(10) // n will be between 0 and 10
 		fmt.Print("Publish to " + topic + "\t")
@@ -35,6 +28,7 @@ func Publish(word string) {
 	}
 
 	//defer c.Disconnect(250)
+
 }
 
 func main() {
@@ -48,9 +42,17 @@ func main() {
 	}
 
 	words := strings.Split(in, " ")
+	opts := MQTT.NewClientOptions().AddBroker("tcp://mosquitto:1883") 
+	//opts := MQTT.NewClientOptions().AddBroker("tcp://iot.eclipse.org:1883")
+	opts.SetClientID("client")
+
+	c := MQTT.NewClient(opts)
+	if token := c.Connect(); token.Wait() && token.Error() != nil {
+		panic(token.Error())
+	}
 
 	for _, s := range words {
-		go Publish(s)
+		go Publish(s, c)
 	}
 
 	fmt.Scanln()

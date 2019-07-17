@@ -10,20 +10,9 @@ services:
     build: ./server
     restart: always
 
-   eclipse-mosquitto:
-    container_name: MQTT-broker
-    image: eclipse-mosquitto:latest
+   mosquitto:
+    image: eclipse-mosquitto:1.6
     restart: always
-    links:
-      - client:client
-      - server:server
-    volumes:
-      - ./mosquitto/config:/mosquitto/config
-      - ./mosquitto/data:/mosquitto/data
-      - ./mosquitto/log:/mosquitto/log
-    ports:
-      - 1883:1883
-    user: '1000:1000'
     
       
    
